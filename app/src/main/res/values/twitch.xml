@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="twitch_api_endpoint" translatable="false">https://api.twitch.tv/kraken/</string>
+    <string name="twitch_client_id" translatable="false">aupqb4v4vi5kb23rz8mgfovtuneyjq</string>
+    <string name="twitch_client_secret" translatable="false">phz5h8c88g8gjquvi7e2b4yumlrk27</string>
+</resources>
