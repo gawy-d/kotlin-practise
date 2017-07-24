@@ -10,8 +10,7 @@ class ParsingModule {
 
     @Provides
     @Singleton
-    fun gson(): Gson {
-        return Gson()
-    }
+    fun gson(): Gson =
+        Gson()
 
 }

@@ -13,22 +13,19 @@ class SchedulerModule {
     @Provides
     @Singleton
     @UiScheduler
-    fun uiScheduler(): Scheduler {
-        return AndroidSchedulers.mainThread()
-    }
+    fun uiScheduler(): Scheduler =
+        AndroidSchedulers.mainThread()
 
     @Provides
     @Singleton
     @NetworkScheduler
-    fun networkScheduler(): Scheduler {
-        return Schedulers.io()
-    }
+    fun networkScheduler(): Scheduler =
+        Schedulers.io()
 
     @Provides
     @Singleton
     @ComputationScheduler
-    fun computationScheduler(): Scheduler {
-        return Schedulers.computation()
-    }
+    fun computationScheduler(): Scheduler =
+        Schedulers.computation()
 
 }

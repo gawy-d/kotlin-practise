@@ -7,7 +7,7 @@ import paperparcel.PaperParcelable
 data class TwitchChannels(
     val total: Int,
     val channels: List<TwitchChannel>
-): PaperParcelable {
+) : PaperParcelable {
     companion object {
         @JvmField val CREATOR = PaperParcelTwitchChannels.CREATOR
     }

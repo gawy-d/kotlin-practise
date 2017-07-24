@@ -1,11 +1,13 @@
 package gary.kotlinapp.application
 
-import gary.kotlinapp.home.HomeComponentHolder
+import gary.kotlinapp.home.view.HomeComponentHolder
+import gary.kotlinapp.twitch.inject.TwitchComponentHolder
 
 class KotlinApplicationComponentHolder(
     applicationComponent: KotlinApplicationComponent
 ) {
 
-    val home = HomeComponentHolder(applicationComponent)
+    val homeComponentHolder = HomeComponentHolder(applicationComponent)
+    val twitchComponentHolder = TwitchComponentHolder(applicationComponent)
 
 }

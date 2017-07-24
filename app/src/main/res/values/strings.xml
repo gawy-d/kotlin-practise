@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Kotlin Practise</string>
+
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="channel_query_hint">Search for a channel</string>
+    <string name="title_twitch_home">Twitch search</string>
+
+    <string name="home_title">Launch different parts of the app!</string>
+    <string name="home_launch_twitch_cta">Launch Twitch Part</string>
+    <string name="twitch_home_channel_query_hint">Search for a channel</string>
 </resources>

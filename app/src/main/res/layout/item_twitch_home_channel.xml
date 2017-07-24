@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gary.kotlinapp.twitch.view.home.channel.item.TwitchHomeChannelView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemTwitchChannel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    />

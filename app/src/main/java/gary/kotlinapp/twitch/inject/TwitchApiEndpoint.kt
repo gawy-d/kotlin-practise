@@ -4,4 +4,4 @@ import javax.inject.Qualifier
 
 @Qualifier
 @MustBeDocumented
-internal annotation class TwitchApiEndpoint
+annotation class TwitchApiEndpoint

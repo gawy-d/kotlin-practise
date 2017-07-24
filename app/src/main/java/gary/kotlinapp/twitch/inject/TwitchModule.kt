@@ -9,7 +9,7 @@ import gary.kotlinapp.core.application.ApplicationContext
 import gary.kotlinapp.core.scheduler.NetworkScheduler
 import gary.kotlinapp.twitch.api.TwitchApi
 import gary.kotlinapp.twitch.api.TwitchApiHeaderInterceptor
-import gary.kotlinapp.twitch.api.TwitchApiManager
+import gary.kotlinapp.twitch.api.TwitchApiService
 import gary.kotlinapp.twitch.mapper.TwitchChannelsDtoTwitchChannelsMapper
 import gary.kotlinapp.twitch.repository.TwitchChannelsRepository
 import io.reactivex.Scheduler
@@ -19,88 +19,85 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 @Module
 class TwitchModule {
 
     @Provides
-    @Singleton
+    @TwitchScope
     @TwitchApiEndpoint
-    fun twitchApiUrl(@ApplicationContext context: Context): HttpUrl {
-        return HttpUrl.parse(context.getString(R.string.twitch_api_endpoint))!!
-    }
+    fun twitchApiUrl(@ApplicationContext context: Context): HttpUrl =
+        HttpUrl.parse(context.getString(R.string.twitch_api_endpoint))!!
 
     @Provides
-    @Singleton
+    @TwitchScope
     @TwitchApiClientId
-    fun twitchApiClientId(@ApplicationContext context: Context): String {
-        return context.getString(R.string.twitch_client_id)
-    }
+    fun twitchApiClientId(@ApplicationContext context: Context): String =
+        context.getString(R.string.twitch_client_id)
 
     @Provides
-    @Singleton
+    @TwitchScope
     @TwitchApiClientSecret
-    fun twitchClientSecret(@ApplicationContext context: Context): String {
-        return context.getString(R.string.twitch_client_secret)
-    }
+    fun twitchClientSecret(@ApplicationContext context: Context): String =
+        context.getString(R.string.twitch_client_secret)
 
     @Provides
-    @Singleton
+    @TwitchScope
     @TwitchApiInterceptor
-    fun twitchApiHeaderInterceptor(@TwitchApiClientId clientId: String): Interceptor {
-        return TwitchApiHeaderInterceptor(clientId)
-    }
+    fun twitchApiHeaderInterceptor(@TwitchApiClientId clientId: String): Interceptor =
+        TwitchApiHeaderInterceptor(clientId)
 
     @Provides
-    @Singleton
+    @TwitchScope
     @TwitchApiOkHttpClient
-    fun twitchApiOkHttpClient(okHttpClientBuilder: OkHttpClient.Builder,
-        @TwitchApiInterceptor interceptor: Interceptor): OkHttpClient {
-        return okHttpClientBuilder.addInterceptor(interceptor).build()
-    }
+    fun twitchApiOkHttpClient(
+        okHttpClientBuilder: OkHttpClient.Builder,
+        @TwitchApiInterceptor interceptor: Interceptor
+    ): OkHttpClient =
+        okHttpClientBuilder.addInterceptor(interceptor).build()
 
     @Provides
-    @Singleton
+    @TwitchScope
     @TwitchApiRetrofitBuilder
-    fun twitchApiRetrofitBuilder(@TwitchApiOkHttpClient client: OkHttpClient,
-        @NetworkScheduler scheduler: Scheduler, gson: Gson): Retrofit.Builder {
-        return Retrofit.Builder().client(client)
+    fun twitchApiRetrofitBuilder(
+        @TwitchApiOkHttpClient client: OkHttpClient,
+        @NetworkScheduler scheduler: Scheduler,
+        gson: Gson
+    ): Retrofit.Builder =
+        Retrofit.Builder().client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(scheduler))
             .addConverterFactory(GsonConverterFactory.create(gson))
-    }
 
     @Provides
-    @Singleton
+    @TwitchScope
     @TwitchApiRetrofit
-    fun twitchApiRetrofit(@TwitchApiRetrofitBuilder retrofitBuilder: Retrofit.Builder,
-        @TwitchApiEndpoint httpUrl: HttpUrl): Retrofit {
-        return retrofitBuilder.baseUrl(httpUrl).build()
-    }
+    fun twitchApiRetrofit(
+        @TwitchApiRetrofitBuilder retrofitBuilder: Retrofit.Builder,
+        @TwitchApiEndpoint httpUrl: HttpUrl
+    ): Retrofit =
+        retrofitBuilder.baseUrl(httpUrl).build()
 
     @Provides
-    @Singleton
-    fun twitchApi(@TwitchApiRetrofit retrofit: Retrofit): TwitchApi {
-        return retrofit.create(TwitchApi::class.java)
-    }
+    @TwitchScope
+    fun twitchApi(@TwitchApiRetrofit retrofit: Retrofit): TwitchApi =
+        retrofit.create(TwitchApi::class.java)
 
     @Provides
-    @Singleton
-    fun twitchChannelsRepository(twitchApi: TwitchApi): TwitchChannelsRepository {
-        return TwitchChannelsRepository(twitchApi)
-    }
+    @TwitchScope
+    fun twitchChannelsRepository(twitchApi: TwitchApi): TwitchChannelsRepository =
+        TwitchChannelsRepository(twitchApi)
 
     @Provides
-    @Singleton
-    fun twitchChannelsDtoTwitchChannelsMapper(): TwitchChannelsDtoTwitchChannelsMapper {
-        return TwitchChannelsDtoTwitchChannelsMapper()
-    }
+    @TwitchScope
+    fun twitchChannelsDtoTwitchChannelsMapper(): TwitchChannelsDtoTwitchChannelsMapper =
+        TwitchChannelsDtoTwitchChannelsMapper()
 
     @Provides
-    @Singleton
-    fun twitchApiManager(channelsRepository: TwitchChannelsRepository,
-        channelsMapper: TwitchChannelsDtoTwitchChannelsMapper): TwitchApiManager {
-        return TwitchApiManager(channelsRepository, channelsMapper)
-    }
+    @TwitchScope
+    fun twitchApiService(
+        channelsRepository: TwitchChannelsRepository,
+        channelsMapper: TwitchChannelsDtoTwitchChannelsMapper
+    ): TwitchApiService =
+        TwitchApiService(channelsRepository, channelsMapper)
 
 }
