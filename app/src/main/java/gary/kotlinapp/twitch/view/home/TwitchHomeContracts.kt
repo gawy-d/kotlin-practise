@@ -1,8 +1,7 @@
 package gary.kotlinapp.twitch.view.home
 
-import gary.kotlinapp.core.view.InfiniteScrollListener
+import gary.kotlinapp.twitch.model.TwitchChannel
 import gary.kotlinapp.twitch.model.TwitchChannels
-import gary.kotlinapp.twitch.view.home.channel.item.TwitchHomeChannelItemAdapter
 import io.reactivex.Observable
 
 class TwitchHomeContracts {
@@ -15,6 +14,22 @@ class TwitchHomeContracts {
 
         fun hideLoaderWithAnimation()
 
+        interface ListAdapter {
+            fun setOnItemClickListener(onItemClickListener: (TwitchChannel) -> Unit)
+
+            fun addAll(
+                channels: List<TwitchChannel>,
+                clearList: Boolean
+            )
+
+            fun clear()
+        }
+
+        interface OnScrollListener {
+            fun setLoadMoreDataAction(loadMoreData: () -> Unit)
+
+            fun reset()
+        }
     }
 
     interface Interactor {
@@ -27,17 +42,16 @@ class TwitchHomeContracts {
             query: String,
             page: Int
         )
-
     }
 
     interface Presenter {
 
         fun onCreate(
             screen: View,
+            listAdapter: View.ListAdapter,
+            scrollListener: View.OnScrollListener,
             interactor: Interactor,
-            router: Router,
-            twitchChannelItemAdapter: TwitchHomeChannelItemAdapter,
-            infiniteScrollListener: InfiniteScrollListener
+            router: Router
         )
 
         fun onDestroy()
@@ -49,7 +63,6 @@ class TwitchHomeContracts {
         fun onNoChannelsFound()
 
         fun onError(error: String)
-
     }
 
     interface Router {
@@ -57,6 +70,5 @@ class TwitchHomeContracts {
         fun onCreate(activity: TwitchHomeActivity)
 
         fun onDestroy()
-
     }
 }

@@ -1,25 +1,22 @@
 package gary.kotlinapp.twitch.view.home
 
-import gary.kotlinapp.core.view.InfiniteScrollListener
 import gary.kotlinapp.twitch.model.TwitchChannel
 import gary.kotlinapp.twitch.model.TwitchChannels
-import gary.kotlinapp.twitch.view.home.channel.item.TwitchHomeChannelItemAdapter
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import java.util.concurrent.TimeUnit
 
 class TwitchHomePresenter(
-    private val uiScheduler: Scheduler
+    private val uiScheduler: Scheduler,
+    private val subscriptions: CompositeDisposable = CompositeDisposable()
 ) : TwitchHomeContracts.Presenter {
-
-    private val subscriptions = CompositeDisposable()
 
     private var screen: TwitchHomeContracts.View? = null
     private var interactor: TwitchHomeContracts.Interactor? = null
     private var router: TwitchHomeContracts.Router? = null
-    private var twitchChannelItemAdapter: TwitchHomeChannelItemAdapter? = null
-    private var infiniteScrollListener: InfiniteScrollListener? = null
+    private var listAdapter: TwitchHomeContracts.View.ListAdapter? = null
+    private var scrollListener: TwitchHomeContracts.View.OnScrollListener? = null
 
     private var currentQuery: String = ""
     private var currentPage = 0
@@ -27,16 +24,16 @@ class TwitchHomePresenter(
 
     override fun onCreate(
         screen: TwitchHomeContracts.View,
+        listAdapter: TwitchHomeContracts.View.ListAdapter,
+        scrollListener: TwitchHomeContracts.View.OnScrollListener,
         interactor: TwitchHomeContracts.Interactor,
-        router: TwitchHomeContracts.Router,
-        twitchChannelItemAdapter: TwitchHomeChannelItemAdapter,
-        infiniteScrollListener: InfiniteScrollListener
+        router: TwitchHomeContracts.Router
     ) {
         this.screen = screen
         this.interactor = interactor
         this.router = router
-        this.twitchChannelItemAdapter = twitchChannelItemAdapter
-        this.infiniteScrollListener = infiniteScrollListener
+        this.listAdapter = listAdapter
+        this.scrollListener = scrollListener
 
         interactor.bind(this)
     }
@@ -60,21 +57,21 @@ class TwitchHomePresenter(
                 loadResults()
             }))
 
-        infiniteScrollListener?.setOnLoadMoreDataListener { loadResults() }
-        twitchChannelItemAdapter?.setOnItemClickListener { onItemClicked(it) }
+        listAdapter?.setOnItemClickListener { onItemClicked(it) }
+        scrollListener?.setLoadMoreDataAction { loadResults() }
     }
 
     override fun onChannelsFound(channels: TwitchChannels) {
         val reset = currentPage == 0
 
         screen?.hideLoaderWithAnimation()
-        twitchChannelItemAdapter?.addAll(channels.channels, reset)
+        listAdapter?.addAll(channels.channels, reset)
 
         total = channels.total
         ++currentPage
 
         if (reset) {
-            infiniteScrollListener?.reset()
+            scrollListener?.reset()
         }
     }
 
@@ -93,8 +90,8 @@ class TwitchHomePresenter(
     }
 
     private fun clearResults() {
-        twitchChannelItemAdapter?.clear()
-        infiniteScrollListener?.reset()
+        listAdapter?.clear()
+        scrollListener?.reset()
     }
 
     private fun loadResults() =

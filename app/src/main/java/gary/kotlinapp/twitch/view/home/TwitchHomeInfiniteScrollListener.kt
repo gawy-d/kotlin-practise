@@ -1,11 +1,11 @@
-package gary.kotlinapp.core.view
+package gary.kotlinapp.twitch.view.home
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 
-class InfiniteScrollListener(
+class TwitchHomeInfiniteScrollListener(
     private val layoutManager: LinearLayoutManager
-) : RecyclerView.OnScrollListener() {
+) : RecyclerView.OnScrollListener(), TwitchHomeContracts.View.OnScrollListener {
 
     private val THRESHOLD = 5
 
@@ -17,11 +17,11 @@ class InfiniteScrollListener(
 
     private var loadMoreData: (() -> Unit)? = null
 
-    fun setOnLoadMoreDataListener(loadMoreData: () -> Unit) {
+    override fun setLoadMoreDataAction(loadMoreData: () -> Unit) {
         this.loadMoreData = loadMoreData
     }
 
-    fun reset() {
+    override fun reset() {
         loading = true
         previousTotal = 0
         firstVisibleItem = 0

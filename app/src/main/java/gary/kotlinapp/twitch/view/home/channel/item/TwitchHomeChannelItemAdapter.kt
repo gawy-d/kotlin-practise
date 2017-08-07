@@ -6,19 +6,21 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import gary.kotlinapp.R
 import gary.kotlinapp.twitch.model.TwitchChannel
+import gary.kotlinapp.twitch.view.home.TwitchHomeContracts
 import javax.inject.Inject
 
-class TwitchHomeChannelItemAdapter @Inject constructor() : RecyclerView.Adapter<TwitchHomeChannelItemViewHolder>() {
+class TwitchHomeChannelItemAdapter @Inject constructor() :
+    RecyclerView.Adapter<TwitchHomeChannelItemViewHolder>(), TwitchHomeContracts.View.ListAdapter {
 
     private val channelList = arrayListOf<TwitchChannel>()
 
     private var onItemClickListener: ((TwitchChannel) -> Unit)? = null
 
-    fun setOnItemClickListener(onItemClickListener: (TwitchChannel) -> Unit) {
+    override fun setOnItemClickListener(onItemClickListener: (TwitchChannel) -> Unit) {
         this.onItemClickListener = onItemClickListener
     }
 
-    fun addAll(
+    override fun addAll(
         channels: List<TwitchChannel>,
         clearList: Boolean
     ) {
@@ -32,14 +34,14 @@ class TwitchHomeChannelItemAdapter @Inject constructor() : RecyclerView.Adapter<
         dispatchUpdates(oldList, channelList)
     }
 
-    fun clear() {
+    override fun clear() {
         val oldList = ArrayList(channelList)
 
         channelList.clear()
         dispatchUpdates(oldList, channelList)
     }
 
-    fun dispatchUpdates(
+    private fun dispatchUpdates(
         oldList: List<TwitchChannel>,
         newList: List<TwitchChannel>
     ) =
