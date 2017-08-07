@@ -1,5 +1,7 @@
 package gary.kotlinapp.home.view
 
+import gary.kotlinapp.core.view.toolbar.ToolbarBuilder
+
 class HomeContracts {
 
     interface View
@@ -8,6 +10,7 @@ class HomeContracts {
 
         fun onCreate(
             screen: View,
+            toolbarBuilder: ToolbarBuilder,
             router: Router
         )
 
@@ -19,9 +22,9 @@ class HomeContracts {
 
     interface Router {
 
-        fun onCreate(activity: HomeActivity)
+        fun create(activity: HomeActivity)
 
-        fun onDestroy()
+        fun destroy()
 
         fun launchTwitchHome()
 

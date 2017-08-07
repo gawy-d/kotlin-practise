@@ -4,11 +4,11 @@ class TwitchHomeRouter : TwitchHomeContracts.Router {
 
     private var activity: TwitchHomeActivity? = null
 
-    override fun onCreate(activity: TwitchHomeActivity) {
+    override fun create(activity: TwitchHomeActivity) {
         this.activity = activity
     }
 
-    override fun onDestroy() {
+    override fun destroy() {
         this.activity = null
     }
 

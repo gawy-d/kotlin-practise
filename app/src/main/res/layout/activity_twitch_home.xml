@@ -36,29 +36,9 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:lines="1"
-            android:paddingEnd="@dimen/home_query_padding"
-            android:paddingLeft="0dp"
-            android:paddingRight="@dimen/home_query_padding"
-            android:paddingStart="0dp"
             />
 
     </android.support.design.widget.TextInputLayout>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:alpha="0"
-        android:indeterminate="true"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/queryEditTextLayout"
-        style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
-        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/channelsRecyclerView"
@@ -67,7 +47,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintTop_toBottomOf="@id/queryEditTextLayout"
         />
 
 </android.support.constraint.ConstraintLayout>

@@ -9,7 +9,8 @@ import android.view.MenuItem
 import com.jakewharton.rxbinding2.widget.textChanges
 import gary.kotlinapp.R
 import gary.kotlinapp.application.KotlinApplication
-import gary.kotlinapp.core.view.ToolbarBuilder
+import gary.kotlinapp.core.extensions.startIfNotRunning
+import gary.kotlinapp.core.view.toolbar.ToolbarBuilder
 import gary.kotlinapp.twitch.view.home.channel.item.TwitchHomeChannelItemAdapter
 import kotlinx.android.synthetic.main.activity_twitch_home.*
 import kotlinx.android.synthetic.main.include_toolbar.*
@@ -33,47 +34,52 @@ class TwitchHomeActivity : AppCompatActivity(), TwitchHomeContracts.View {
 
         KotlinApplication.componentsHolder.twitchComponentHolder.getHomeComponentHolder().get().inject(this)
 
-        toolbarBuilder.build(this, toolbar, getString(R.string.title_twitch_home), null, true)
+        val scrollListener = setup()
 
+        presenter.onCreate(this, listAdapter, scrollListener, queryEditText.textChanges(), toolbarBuilder, interactor,
+            router)
+    }
+
+    private fun setup(): TwitchHomeContracts.View.OnScrollListener {
         val layoutManager = LinearLayoutManager(this)
         val scrollListener = TwitchHomeInfiniteScrollListener(layoutManager)
+
+        toolbarBuilder.create(this)
+        router.create(this)
 
         channelsRecyclerView.layoutManager = layoutManager
         channelsRecyclerView.adapter = listAdapter
         channelsRecyclerView.addOnScrollListener(scrollListener)
 
-        router.onCreate(this)
-        presenter.onCreate(this, listAdapter, scrollListener, interactor, router)
-        presenter.init(queryEditText.textChanges())
+        return scrollListener
     }
 
     override fun onDestroy() {
         presenter.onDestroy()
-        router.onDestroy()
+        router.destroy()
+        toolbarBuilder.destroy()
 
         KotlinApplication.componentsHolder.twitchComponentHolder.release()
 
         super.onDestroy()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
+    override fun onOptionsItemSelected(item: MenuItem) =
         when (item.itemId) {
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-
-        return super.onOptionsItemSelected(item)
-    }
 
     override fun displayError(error: String) =
         Snackbar.make(container, error, Snackbar.LENGTH_SHORT).show()
 
-    override fun displayLoaderWithAnimation() {
-        if (!progressAnimation.isRunning) {
-            progressAnimation.start()
-        }
+    override fun displayLoader() {
+        progressAnimation.startIfNotRunning()
     }
 
-    override fun hideLoaderWithAnimation() =
+    override fun hideLoader() =
         progressAnimation.reverse()
 }

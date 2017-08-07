@@ -1,5 +1,8 @@
 package gary.kotlinapp.twitch.view.home
 
+import gary.kotlinapp.R
+import gary.kotlinapp.core.application.resource.ResourceProvider
+import gary.kotlinapp.core.view.toolbar.ToolbarBuilder
 import gary.kotlinapp.twitch.model.TwitchChannel
 import gary.kotlinapp.twitch.model.TwitchChannels
 import io.reactivex.Observable
@@ -9,14 +12,17 @@ import java.util.concurrent.TimeUnit
 
 class TwitchHomePresenter(
     private val uiScheduler: Scheduler,
+    private val resourceProvider: ResourceProvider,
     private val subscriptions: CompositeDisposable = CompositeDisposable()
-) : TwitchHomeContracts.Presenter {
+) : TwitchHomeContracts.Presenter, TwitchHomeContracts.Interactor.Callbacks {
 
     private var screen: TwitchHomeContracts.View? = null
     private var interactor: TwitchHomeContracts.Interactor? = null
     private var router: TwitchHomeContracts.Router? = null
     private var listAdapter: TwitchHomeContracts.View.ListAdapter? = null
     private var scrollListener: TwitchHomeContracts.View.OnScrollListener? = null
+    private var queryChanges: Observable<CharSequence>? = null
+    private var toolbarBuilder: ToolbarBuilder? = null
 
     private var currentQuery: String = ""
     private var currentPage = 0
@@ -26,45 +32,40 @@ class TwitchHomePresenter(
         screen: TwitchHomeContracts.View,
         listAdapter: TwitchHomeContracts.View.ListAdapter,
         scrollListener: TwitchHomeContracts.View.OnScrollListener,
+        queryChanges: Observable<CharSequence>,
+        toolbarBuilder: ToolbarBuilder,
         interactor: TwitchHomeContracts.Interactor,
         router: TwitchHomeContracts.Router
     ) {
         this.screen = screen
-        this.interactor = interactor
-        this.router = router
         this.listAdapter = listAdapter
         this.scrollListener = scrollListener
+        this.queryChanges = queryChanges
+        this.toolbarBuilder = toolbarBuilder
+        this.interactor = interactor
+        this.router = router
 
-        interactor.bind(this)
+        start()
     }
 
     override fun onDestroy() {
         interactor?.unbind()
+
         subscriptions.clear()
 
-        this.router = null
-        this.interactor = null
-        this.screen = null
-    }
-
-    override fun init(queryChanges: Observable<CharSequence>) {
-        subscriptions.add(queryChanges.debounce(300, TimeUnit.MILLISECONDS)
-            .map(CharSequence::toString)
-            .observeOn(uiScheduler)
-            .subscribe({ query ->
-                currentQuery = query
-                currentPage = 0
-                loadResults()
-            }))
-
-        listAdapter?.setOnItemClickListener { onItemClicked(it) }
-        scrollListener?.setLoadMoreDataAction { loadResults() }
+        router = null
+        interactor = null
+        toolbarBuilder = null
+        queryChanges = null
+        scrollListener = null
+        listAdapter = null
+        screen = null
     }
 
     override fun onChannelsFound(channels: TwitchChannels) {
         val reset = currentPage == 0
 
-        screen?.hideLoaderWithAnimation()
+        screen?.hideLoader()
         listAdapter?.addAll(channels.channels, reset)
 
         total = channels.total
@@ -76,13 +77,37 @@ class TwitchHomePresenter(
     }
 
     override fun onNoChannelsFound() {
-        screen?.hideLoaderWithAnimation()
+        screen?.hideLoader()
         clearResults()
     }
 
     override fun onError(error: String) {
-        screen?.hideLoaderWithAnimation()
-        screen?.displayError(error)
+        screen?.apply {
+            hideLoader()
+            displayError(error)
+        }
+    }
+
+    private fun start() {
+        interactor?.bind(this)
+
+        listAdapter?.setOnItemClickListener { onItemClicked(it) }
+        scrollListener?.setLoadMoreDataAction { loadResults() }
+
+        toolbarBuilder?.build(resourceProvider.getString(R.string.title_twitch_home), displayHomeAsUp = true)
+
+        queryChanges?.let {
+            subscriptions.add(it.debounce(300, TimeUnit.MILLISECONDS)
+                .map(CharSequence::toString)
+                .observeOn(uiScheduler)
+                .subscribe {
+                    currentQuery = it
+                    currentPage = 0
+
+                    loadResults()
+                }
+            )
+        }
     }
 
     private fun onItemClicked(channel: TwitchChannel) {
@@ -95,11 +120,10 @@ class TwitchHomePresenter(
     }
 
     private fun loadResults() =
-        when {
-            currentQuery.isEmpty() -> clearResults()
-            else -> {
-                screen?.displayLoaderWithAnimation()
-                interactor?.searchChannels(currentQuery, currentPage)
-            }
-        } ?: Unit
+        if (currentQuery.isEmpty()) {
+            clearResults()
+        } else {
+            screen?.displayLoader()
+            interactor?.searchChannels(currentQuery, currentPage)
+        }
 }

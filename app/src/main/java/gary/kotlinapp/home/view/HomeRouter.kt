@@ -7,11 +7,11 @@ class HomeRouter : HomeContracts.Router {
 
     private var activity: HomeActivity? = null
 
-    override fun onCreate(activity: HomeActivity) {
+    override fun create(activity: HomeActivity) {
         this.activity = activity
     }
 
-    override fun onDestroy() {
+    override fun destroy() {
         this.activity = null
     }
 

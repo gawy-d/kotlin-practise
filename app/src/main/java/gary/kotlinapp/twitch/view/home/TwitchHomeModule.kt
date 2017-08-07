@@ -2,6 +2,7 @@ package gary.kotlinapp.twitch.view.home
 
 import dagger.Module
 import dagger.Provides
+import gary.kotlinapp.core.application.resource.ResourceProvider
 import gary.kotlinapp.core.scheduler.UiScheduler
 import gary.kotlinapp.twitch.api.TwitchApiService
 import io.reactivex.Scheduler
@@ -11,8 +12,11 @@ class TwitchHomeModule {
 
     @Provides
     @TwitchHomeScope
-    fun presenter(@UiScheduler uiScheduler: Scheduler): TwitchHomeContracts.Presenter =
-        TwitchHomePresenter(uiScheduler)
+    fun presenter(
+        @UiScheduler uiScheduler: Scheduler,
+        resourceProvider: ResourceProvider
+    ): TwitchHomeContracts.Presenter =
+        TwitchHomePresenter(uiScheduler, resourceProvider)
 
     @Provides
     @TwitchHomeScope

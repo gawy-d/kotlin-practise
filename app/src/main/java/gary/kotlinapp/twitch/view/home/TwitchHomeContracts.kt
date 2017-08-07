@@ -1,5 +1,6 @@
 package gary.kotlinapp.twitch.view.home
 
+import gary.kotlinapp.core.view.toolbar.ToolbarBuilder
 import gary.kotlinapp.twitch.model.TwitchChannel
 import gary.kotlinapp.twitch.model.TwitchChannels
 import io.reactivex.Observable
@@ -10,9 +11,9 @@ class TwitchHomeContracts {
 
         fun displayError(error: String)
 
-        fun displayLoaderWithAnimation()
+        fun displayLoader()
 
-        fun hideLoaderWithAnimation()
+        fun hideLoader()
 
         interface ListAdapter {
             fun setOnItemClickListener(onItemClickListener: (TwitchChannel) -> Unit)
@@ -34,7 +35,7 @@ class TwitchHomeContracts {
 
     interface Interactor {
 
-        fun bind(presenter: Presenter)
+        fun bind(callbacks: Callbacks)
 
         fun unbind()
 
@@ -42,6 +43,15 @@ class TwitchHomeContracts {
             query: String,
             page: Int
         )
+
+        interface Callbacks {
+
+            fun onChannelsFound(channels: TwitchChannels)
+
+            fun onNoChannelsFound()
+
+            fun onError(error: String)
+        }
     }
 
     interface Presenter {
@@ -50,25 +60,19 @@ class TwitchHomeContracts {
             screen: View,
             listAdapter: View.ListAdapter,
             scrollListener: View.OnScrollListener,
+            queryChanges: Observable<CharSequence>,
+            toolbarBuilder: ToolbarBuilder,
             interactor: Interactor,
             router: Router
         )
 
         fun onDestroy()
-
-        fun init(queryChanges: Observable<CharSequence>)
-
-        fun onChannelsFound(channels: TwitchChannels)
-
-        fun onNoChannelsFound()
-
-        fun onError(error: String)
     }
 
     interface Router {
 
-        fun onCreate(activity: TwitchHomeActivity)
+        fun create(activity: TwitchHomeActivity)
 
-        fun onDestroy()
+        fun destroy()
     }
 }
