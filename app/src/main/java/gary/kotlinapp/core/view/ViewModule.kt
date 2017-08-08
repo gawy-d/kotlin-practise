@@ -9,7 +9,6 @@ import gary.kotlinapp.core.view.toolbar.ToolbarBuilder
 class ViewModule {
 
     @Provides
-    fun toolbarBuilder(): ToolbarBuilder =
-        AppToolbarBuilder()
+    fun toolbarBuilder(): ToolbarBuilder = AppToolbarBuilder()
 
 }

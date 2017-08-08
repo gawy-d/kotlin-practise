@@ -13,8 +13,12 @@ import javax.inject.Singleton
 @Component(modules = arrayOf(KotlinApplicationModule::class, CoreModule::class))
 interface KotlinApplicationComponent : CoreProvider {
 
-    fun plus(module: HomeModule): HomeComponent
+    fun plus(
+        module: HomeModule
+    ): HomeComponent
 
-    fun plus(module: TwitchModule): TwitchComponent
+    fun plus(
+        module: TwitchModule
+    ): TwitchComponent
 
 }

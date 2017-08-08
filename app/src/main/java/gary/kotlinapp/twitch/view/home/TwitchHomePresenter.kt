@@ -62,7 +62,9 @@ class TwitchHomePresenter(
         screen = null
     }
 
-    override fun onChannelsFound(channels: TwitchChannels) {
+    override fun onChannelsFound(
+        channels: TwitchChannels
+    ) {
         val reset = currentPage == 0
 
         screen?.hideLoader()
@@ -77,11 +79,12 @@ class TwitchHomePresenter(
     }
 
     override fun onNoChannelsFound() {
-        screen?.hideLoader()
         clearResults()
     }
 
-    override fun onError(error: String) {
+    override fun onError(
+        error: String
+    ) {
         screen?.apply {
             hideLoader()
             displayError(error)
@@ -91,39 +94,51 @@ class TwitchHomePresenter(
     private fun start() {
         interactor?.bind(this)
 
-        listAdapter?.setOnItemClickListener { onItemClicked(it) }
-        scrollListener?.setLoadMoreDataAction { loadResults() }
+        listAdapter?.setOnItemClickAction { onItemClicked(it) }
+
+        scrollListener?.setLoadMoreDataAction {
+            displayLoader()
+            loadResults()
+        }
 
         toolbarBuilder?.build(resourceProvider.getString(R.string.title_twitch_home), displayHomeAsUp = true)
 
-        queryChanges?.let {
-            subscriptions.add(it.debounce(300, TimeUnit.MILLISECONDS)
-                .map(CharSequence::toString)
-                .observeOn(uiScheduler)
-                .subscribe {
-                    currentQuery = it
-                    currentPage = 0
+        queryChanges?.apply {
+            subscriptions.add(
+                map(CharSequence::toString)
+                    .map {
+                        currentQuery = it
+                        currentPage = 0
 
-                    loadResults()
-                }
+                        displayLoader()
+                        it
+                    }
+                    .debounce(300, TimeUnit.MILLISECONDS)
+                    .observeOn(uiScheduler)
+                    .subscribe { loadResults() }
             )
         }
     }
 
-    private fun onItemClicked(channel: TwitchChannel) {
-        // Do something
+    private fun onItemClicked(
+        channel: TwitchChannel
+    ) {
+        //TODO: Do something (maybe)
     }
 
     private fun clearResults() {
         listAdapter?.clear()
         scrollListener?.reset()
+        screen?.hideLoader()
     }
 
-    private fun loadResults() =
+    private fun loadResults() {
         if (currentQuery.isEmpty()) {
             clearResults()
         } else {
-            screen?.displayLoader()
             interactor?.searchChannels(currentQuery, currentPage)
         }
+    }
+
+    private fun displayLoader() = if (currentQuery.isNotEmpty()) screen?.displayLoader() else screen?.hideLoader()
 }

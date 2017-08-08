@@ -13,7 +13,9 @@ class TwitchHomeInteractor(
 
     private var callbacks: TwitchHomeContracts.Interactor.Callbacks? = null
 
-    override fun bind(callbacks: TwitchHomeContracts.Interactor.Callbacks) {
+    override fun bind(
+        callbacks: TwitchHomeContracts.Interactor.Callbacks
+    ) {
         this.callbacks = callbacks
     }
 
@@ -32,12 +34,16 @@ class TwitchHomeInteractor(
         )
     }
 
-    private fun handleChannels(channels: TwitchChannels) =
+    private fun handleChannels(
+        channels: TwitchChannels
+    ) {
         when (channels.total) {
             0 -> callbacks?.onNoChannelsFound()
             else -> callbacks?.onChannelsFound(channels)
-        } ?: Unit
+        }
+    }
 
-    private fun handleError(error: Throwable) =
-        callbacks?.onError(error.message ?: "") ?: Unit
+    private fun handleError(
+        error: Throwable
+    ) = callbacks?.onError(error.message ?: "") ?: Unit
 }

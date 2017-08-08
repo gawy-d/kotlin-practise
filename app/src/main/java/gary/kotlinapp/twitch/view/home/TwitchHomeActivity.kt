@@ -9,7 +9,8 @@ import android.view.MenuItem
 import com.jakewharton.rxbinding2.widget.textChanges
 import gary.kotlinapp.R
 import gary.kotlinapp.application.KotlinApplication
-import gary.kotlinapp.core.extensions.startIfNotRunning
+import gary.kotlinapp.core.extensions.reverseIf
+import gary.kotlinapp.core.extensions.startIf
 import gary.kotlinapp.core.view.toolbar.ToolbarBuilder
 import gary.kotlinapp.twitch.view.home.channel.item.TwitchHomeChannelItemAdapter
 import kotlinx.android.synthetic.main.activity_twitch_home.*
@@ -28,7 +29,9 @@ class TwitchHomeActivity : AppCompatActivity(), TwitchHomeContracts.View {
         ObjectAnimator.ofFloat(progressBar, "alpha", 0f, 1f).setDuration(250)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_twitch_home)
 
@@ -64,22 +67,21 @@ class TwitchHomeActivity : AppCompatActivity(), TwitchHomeContracts.View {
         super.onDestroy()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem) =
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(
+        item: MenuItem
+    ) = when (item.itemId) {
+        android.R.id.home -> {
+            onBackPressed()
+            true
         }
-
-    override fun displayError(error: String) =
-        Snackbar.make(container, error, Snackbar.LENGTH_SHORT).show()
-
-    override fun displayLoader() {
-        progressAnimation.startIfNotRunning()
+        else -> super.onOptionsItemSelected(item)
     }
 
-    override fun hideLoader() =
-        progressAnimation.reverse()
+    override fun displayError(
+        error: String
+    ) = Snackbar.make(container, error, Snackbar.LENGTH_SHORT).show()
+
+    override fun displayLoader() = progressAnimation.startIf { progressBar.alpha == 0f }
+
+    override fun hideLoader() = progressAnimation.reverseIf { progressBar.alpha > 0f }
 }

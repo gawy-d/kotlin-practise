@@ -11,12 +11,10 @@ class HomeModule {
     @HomeScope
     fun presenter(
         resourceProvider: ResourceProvider
-    ): HomeContracts.Presenter =
-        HomePresenter(resourceProvider)
+    ): HomeContracts.Presenter = HomePresenter(resourceProvider)
 
     @Provides
     @HomeScope
-    fun router(): HomeContracts.Router =
-        HomeRouter()
+    fun router(): HomeContracts.Router = HomeRouter()
 
 }

@@ -10,6 +10,7 @@ import gary.kotlinapp.core.scheduler.NetworkScheduler
 import gary.kotlinapp.twitch.api.TwitchApi
 import gary.kotlinapp.twitch.api.TwitchApiHeaderInterceptor
 import gary.kotlinapp.twitch.api.TwitchApiService
+import gary.kotlinapp.twitch.api.TwitchApiServiceImpl
 import gary.kotlinapp.twitch.mapper.TwitchChannelsDtoTwitchChannelsMapper
 import gary.kotlinapp.twitch.repository.TwitchChannelsRepository
 import io.reactivex.Scheduler
@@ -26,26 +27,30 @@ class TwitchModule {
     @Provides
     @TwitchScope
     @TwitchApiEndpoint
-    fun twitchApiUrl(@ApplicationContext context: Context): HttpUrl =
-        HttpUrl.parse(context.getString(R.string.twitch_api_endpoint))!!
+    fun twitchApiUrl(
+        @ApplicationContext context: Context
+    ): HttpUrl = HttpUrl.parse(context.getString(R.string.twitch_api_endpoint))!!
 
     @Provides
     @TwitchScope
     @TwitchApiClientId
-    fun twitchApiClientId(@ApplicationContext context: Context): String =
-        context.getString(R.string.twitch_client_id)
+    fun twitchApiClientId(
+        @ApplicationContext context: Context
+    ): String = context.getString(R.string.twitch_client_id)
 
     @Provides
     @TwitchScope
     @TwitchApiClientSecret
-    fun twitchClientSecret(@ApplicationContext context: Context): String =
-        context.getString(R.string.twitch_client_secret)
+    fun twitchClientSecret(
+        @ApplicationContext context: Context
+    ): String = context.getString(R.string.twitch_client_secret)
 
     @Provides
     @TwitchScope
     @TwitchApiInterceptor
-    fun twitchApiHeaderInterceptor(@TwitchApiClientId clientId: String): Interceptor =
-        TwitchApiHeaderInterceptor(clientId)
+    fun twitchApiHeaderInterceptor(
+        @TwitchApiClientId clientId: String
+    ): Interceptor = TwitchApiHeaderInterceptor(clientId)
 
     @Provides
     @TwitchScope
@@ -53,8 +58,7 @@ class TwitchModule {
     fun twitchApiOkHttpClient(
         okHttpClientBuilder: OkHttpClient.Builder,
         @TwitchApiInterceptor interceptor: Interceptor
-    ): OkHttpClient =
-        okHttpClientBuilder.addInterceptor(interceptor).build()
+    ): OkHttpClient = okHttpClientBuilder.addInterceptor(interceptor).build()
 
     @Provides
     @TwitchScope
@@ -63,10 +67,9 @@ class TwitchModule {
         @TwitchApiOkHttpClient client: OkHttpClient,
         @NetworkScheduler scheduler: Scheduler,
         gson: Gson
-    ): Retrofit.Builder =
-        Retrofit.Builder().client(client)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(scheduler))
-            .addConverterFactory(GsonConverterFactory.create(gson))
+    ): Retrofit.Builder = Retrofit.Builder().client(client)
+        .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(scheduler))
+        .addConverterFactory(GsonConverterFactory.create(gson))
 
     @Provides
     @TwitchScope
@@ -74,30 +77,29 @@ class TwitchModule {
     fun twitchApiRetrofit(
         @TwitchApiRetrofitBuilder retrofitBuilder: Retrofit.Builder,
         @TwitchApiEndpoint httpUrl: HttpUrl
-    ): Retrofit =
-        retrofitBuilder.baseUrl(httpUrl).build()
+    ): Retrofit = retrofitBuilder.baseUrl(httpUrl).build()
 
     @Provides
     @TwitchScope
-    fun twitchApi(@TwitchApiRetrofit retrofit: Retrofit): TwitchApi =
-        retrofit.create(TwitchApi::class.java)
+    fun twitchApi(
+        @TwitchApiRetrofit retrofit: Retrofit
+    ): TwitchApi = retrofit.create(TwitchApi::class.java)
 
     @Provides
     @TwitchScope
-    fun twitchChannelsRepository(twitchApi: TwitchApi): TwitchChannelsRepository =
-        TwitchChannelsRepository(twitchApi)
+    fun twitchChannelsRepository(
+        twitchApi: TwitchApi
+    ): TwitchChannelsRepository = TwitchChannelsRepository(twitchApi)
 
     @Provides
     @TwitchScope
-    fun twitchChannelsDtoTwitchChannelsMapper(): TwitchChannelsDtoTwitchChannelsMapper =
-        TwitchChannelsDtoTwitchChannelsMapper()
+    fun twitchChannelsDtoTwitchChannelsMapper(): TwitchChannelsDtoTwitchChannelsMapper = TwitchChannelsDtoTwitchChannelsMapper()
 
     @Provides
     @TwitchScope
     fun twitchApiService(
         channelsRepository: TwitchChannelsRepository,
         channelsMapper: TwitchChannelsDtoTwitchChannelsMapper
-    ): TwitchApiService =
-        TwitchApiService(channelsRepository, channelsMapper)
+    ): TwitchApiService = TwitchApiServiceImpl(channelsRepository, channelsMapper)
 
 }

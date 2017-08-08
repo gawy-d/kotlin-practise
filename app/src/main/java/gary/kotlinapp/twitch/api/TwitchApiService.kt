@@ -1,19 +1,21 @@
 package gary.kotlinapp.twitch.api
 
-import gary.kotlinapp.twitch.mapper.TwitchChannelsDtoTwitchChannelsMapper
 import gary.kotlinapp.twitch.model.TwitchChannels
-import gary.kotlinapp.twitch.repository.TwitchChannelsRepository
 import io.reactivex.Single
 
-class TwitchApiService(
-    private val channelsRepository: TwitchChannelsRepository,
-    private val channelsMapper: TwitchChannelsDtoTwitchChannelsMapper
-) {
+interface TwitchApiService {
 
+    /**
+     * Search for channels
+     *
+     * @param query The query
+     * @param page The page (for paging purposes)
+     *
+     * @return A Single Observable which emits TwitchChannels object
+     */
     fun searchChannels(
         query: String,
         page: Int
-    ): Single<TwitchChannels> =
-        channelsRepository.searchChannels(query, page).map(channelsMapper)
+    ): Single<TwitchChannels>
 
 }

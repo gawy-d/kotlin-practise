@@ -7,11 +7,11 @@ import io.reactivex.functions.Function
 
 class TwitchChannelsDtoTwitchChannelsMapper : Function<TwitchChannelsDto, TwitchChannels> {
 
-    override fun apply(channelsDto: TwitchChannelsDto): TwitchChannels {
-        val channels = channelsDto.channels.map {
-            TwitchChannel(it.id, it.displayName, it.followers, it.game, it.logo)
-        }
-
-        return TwitchChannels(channels.size, channels)
+    override fun apply(
+        channelsDto: TwitchChannelsDto
+    ): TwitchChannels = channelsDto.channels.map {
+        TwitchChannel(it.id, it.displayName, it.followers, it.game, it.logo)
+    }.let {
+        TwitchChannels(it.size, it)
     }
 }

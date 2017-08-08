@@ -21,13 +21,16 @@ class TwitchHomeChannelView @JvmOverloads constructor(
     private fun init() =
         inflate(context, R.layout.view_twitch_home_channel, this)
 
-    fun bind(channel: TwitchChannel) {
+    fun bind(
+        channel: TwitchChannel
+    ) {
         channelTitle.text = channel.displayName
         channelFollowers.text = "%d followers".format(channel.followers)
 
         GlideApp.with(this).load(channel.logo).circleCrop().into(channelLogo)
     }
 
-    override fun setOnClickListener(l: OnClickListener?) =
-        channelLayout.setOnClickListener(l)
+    override fun setOnClickListener(
+        l: OnClickListener?
+    ) = channelLayout.setOnClickListener(l)
 }

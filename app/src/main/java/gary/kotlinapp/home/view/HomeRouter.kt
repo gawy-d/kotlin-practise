@@ -1,13 +1,15 @@
 package gary.kotlinapp.home.view
 
-import android.content.Intent
+import gary.kotlinapp.core.functions.startActivity
 import gary.kotlinapp.twitch.view.home.TwitchHomeActivity
 
 class HomeRouter : HomeContracts.Router {
 
     private var activity: HomeActivity? = null
 
-    override fun create(activity: HomeActivity) {
+    override fun create(
+        activity: HomeActivity
+    ) {
         this.activity = activity
     }
 
@@ -15,10 +17,6 @@ class HomeRouter : HomeContracts.Router {
         this.activity = null
     }
 
-    override fun launchTwitchHome() {
-        val intent = Intent(activity, TwitchHomeActivity::class.java)
-
-        activity?.startActivity(intent)
-    }
+    override fun launchTwitchHome() = activity?.let { startActivity<TwitchHomeActivity>(it) } ?: Unit
 
 }

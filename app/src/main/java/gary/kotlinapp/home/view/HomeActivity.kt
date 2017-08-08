@@ -14,7 +14,9 @@ class HomeActivity : AppCompatActivity(), HomeContracts.View {
     @Inject internal lateinit var router: HomeContracts.Router
     @Inject internal lateinit var toolbarBuilder: ToolbarBuilder
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 

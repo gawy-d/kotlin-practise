@@ -17,7 +17,9 @@ class TwitchHomeInfiniteScrollListener(
 
     private var loadMoreData: (() -> Unit)? = null
 
-    override fun setLoadMoreDataAction(loadMoreData: () -> Unit) {
+    override fun setLoadMoreDataAction(
+        loadMoreData: () -> Unit
+    ) {
         this.loadMoreData = loadMoreData
     }
 

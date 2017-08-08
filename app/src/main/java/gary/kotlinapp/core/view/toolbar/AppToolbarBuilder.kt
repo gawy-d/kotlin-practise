@@ -7,7 +7,9 @@ internal class AppToolbarBuilder : ToolbarBuilder {
 
     private var activity: AppCompatActivity? = null
 
-    override fun create(activity: AppCompatActivity) {
+    override fun create(
+        activity: AppCompatActivity
+    ) {
         this.activity = activity
     }
 
@@ -19,20 +21,14 @@ internal class AppToolbarBuilder : ToolbarBuilder {
         title: String?,
         subtitle: String?,
         displayHomeAsUp: Boolean,
-        displayShowHome: Boolean,
         indicator: Int
-    ) {
-        activity?.apply {
-            setSupportActionBar(findViewById(R.id.toolbar))
-
-            supportActionBar?.let {
-                it.title = title
-                it.subtitle = subtitle
-                it.setDisplayHomeAsUpEnabled(displayHomeAsUp)
-                it.setDisplayShowHomeEnabled(displayShowHome)
-                it.setHomeAsUpIndicator(indicator)
-            }
+    ) = activity?.let {
+        it.setSupportActionBar(it.findViewById(R.id.toolbar))
+        it.supportActionBar?.let {
+            it.title = title
+            it.subtitle = subtitle
+            it.setDisplayHomeAsUpEnabled(displayHomeAsUp)
+            it.setHomeAsUpIndicator(indicator)
         }
-    }
-
+    } ?: Unit
 }

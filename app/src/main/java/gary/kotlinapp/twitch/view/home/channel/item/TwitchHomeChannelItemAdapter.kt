@@ -14,10 +14,12 @@ class TwitchHomeChannelItemAdapter @Inject constructor() :
 
     private val channelList = arrayListOf<TwitchChannel>()
 
-    private var onItemClickListener: ((TwitchChannel) -> Unit)? = null
+    private var onItemClickAction: ((TwitchChannel) -> Unit)? = null
 
-    override fun setOnItemClickListener(onItemClickListener: (TwitchChannel) -> Unit) {
-        this.onItemClickListener = onItemClickListener
+    override fun setOnItemClickAction(
+        onItemClickAction: (TwitchChannel) -> Unit
+    ) {
+        this.onItemClickAction = onItemClickAction
     }
 
     override fun addAll(
@@ -44,27 +46,25 @@ class TwitchHomeChannelItemAdapter @Inject constructor() :
     private fun dispatchUpdates(
         oldList: List<TwitchChannel>,
         newList: List<TwitchChannel>
-    ) =
-        DiffUtil.calculateDiff(TwitchHomeChannelItemDiffCallback(oldList, newList)).dispatchUpdatesTo(this)
+    ) = DiffUtil.calculateDiff(TwitchHomeChannelItemDiffCallback(oldList, newList)).dispatchUpdatesTo(this)
 
     override fun onBindViewHolder(
         holder: TwitchHomeChannelItemViewHolder,
         position: Int
-    ) =
-        holder.bind(channelList[position])
+    ) = holder.bind(channelList[position])
 
-    override fun getItemId(position: Int) =
-        channelList[position].id
+    override fun getItemId(
+        position: Int
+    ) = channelList[position].id
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): TwitchHomeChannelItemViewHolder =
-        TwitchHomeChannelItemViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_twitch_home_channel, parent, false),
-            onItemClickListener)
+    ): TwitchHomeChannelItemViewHolder = TwitchHomeChannelItemViewHolder(
+        LayoutInflater.from(parent.context).inflate(R.layout.item_twitch_home_channel, parent, false),
+        onItemClickAction
+    )
 
-    override fun getItemCount(): Int =
-        channelList.size
+    override fun getItemCount(): Int = channelList.size
 
 }

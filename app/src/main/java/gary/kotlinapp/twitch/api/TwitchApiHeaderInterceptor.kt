@@ -1,5 +1,8 @@
 package gary.kotlinapp.twitch.api
 
+import gary.kotlinapp.twitch.api.TwitchApiConstants.HEADER_KEY_ACCEPT
+import gary.kotlinapp.twitch.api.TwitchApiConstants.HEADER_KEY_CLIENT_ID
+import gary.kotlinapp.twitch.api.TwitchApiConstants.HEADER_VALUE_ACCEPT
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -7,14 +10,12 @@ class TwitchApiHeaderInterceptor(
     private val clientId: String
 ) : Interceptor {
 
-    private val headerClientIdKey = "Client-ID"
-    private val headerAcceptKey = "Accept"
-    private val headerAcceptValue = "application/vnd.twitchtv.v5+json"
-
-    override fun intercept(chain: Interceptor.Chain): Response {
+    override fun intercept(
+        chain: Interceptor.Chain
+    ): Response {
         val builder = chain.request().newBuilder()
 
-        builder.addHeader(headerClientIdKey, clientId).addHeader(headerAcceptKey, headerAcceptValue)
+        builder.addHeader(HEADER_KEY_CLIENT_ID, clientId).addHeader(HEADER_KEY_ACCEPT, HEADER_VALUE_ACCEPT)
 
         return chain.proceed(builder.build())
     }

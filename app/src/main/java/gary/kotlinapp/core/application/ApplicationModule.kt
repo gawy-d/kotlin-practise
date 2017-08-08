@@ -14,12 +14,14 @@ class ApplicationModule {
     @Provides
     @Singleton
     @ApplicationContext
-    fun applicationContext(application: Application): Context =
-        application.applicationContext
+    fun applicationContext(
+        application: Application
+    ): Context = application.applicationContext
 
     @Provides
     @Singleton
-    fun resourceProvider(@ApplicationContext context: Context): ResourceProvider =
-        AppResourceProvider(context)
+    fun resourceProvider(
+        @ApplicationContext context: Context
+    ): ResourceProvider = AppResourceProvider(context)
 
 }

@@ -15,20 +15,17 @@ class TwitchHomeModule {
     fun presenter(
         @UiScheduler uiScheduler: Scheduler,
         resourceProvider: ResourceProvider
-    ): TwitchHomeContracts.Presenter =
-        TwitchHomePresenter(uiScheduler, resourceProvider)
+    ): TwitchHomeContracts.Presenter = TwitchHomePresenter(uiScheduler, resourceProvider)
 
     @Provides
     @TwitchHomeScope
     fun interactor(
         twitchApiService: TwitchApiService,
         @UiScheduler uiScheduler: Scheduler
-    ): TwitchHomeContracts.Interactor =
-        TwitchHomeInteractor(twitchApiService, uiScheduler)
+    ): TwitchHomeContracts.Interactor = TwitchHomeInteractor(twitchApiService, uiScheduler)
 
     @Provides
     @TwitchHomeScope
-    fun router(): TwitchHomeContracts.Router =
-        TwitchHomeRouter()
+    fun router(): TwitchHomeContracts.Router = TwitchHomeRouter()
 
 }

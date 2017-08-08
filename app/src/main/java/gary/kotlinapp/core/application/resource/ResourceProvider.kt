@@ -4,6 +4,14 @@ import android.support.annotation.StringRes
 
 interface ResourceProvider {
 
-    fun getString(@StringRes res: Int): String
+    /**
+     * Get a string resource
+     *
+     * @param res The string resource id
+     * @return The string resource
+     */
+    fun getString(
+        @StringRes res: Int
+    ): String
 
 }

@@ -6,6 +6,8 @@ import dagger.Subcomponent
 @Subcomponent(modules = arrayOf(HomeModule::class))
 interface HomeComponent : HomeProvider {
 
-    fun inject(activity: HomeActivity)
+    fun inject(
+        activity: HomeActivity
+    )
 
 }

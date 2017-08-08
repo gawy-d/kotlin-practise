@@ -7,15 +7,17 @@ import gary.kotlinapp.twitch.model.TwitchChannel
 
 class TwitchHomeChannelItemViewHolder(
     itemView: View,
-    private val onItemClickListener: ((TwitchChannel) -> Unit)?
+    private val onItemClickAction: ((TwitchChannel) -> Unit)?
 ) : RecyclerView.ViewHolder(itemView) {
 
     val twitchChannelView: TwitchHomeChannelView? by lazy {
         itemView.findViewById<TwitchHomeChannelView>(R.id.itemTwitchChannel)
     }
 
-    fun bind(channel: TwitchChannel) {
+    fun bind(
+        channel: TwitchChannel
+    ) {
         twitchChannelView?.bind(channel)
-        twitchChannelView?.setOnClickListener { onItemClickListener?.invoke(channel) }
+        twitchChannelView?.setOnClickListener { onItemClickAction?.invoke(channel) }
     }
 }

@@ -12,7 +12,6 @@ class KotlinApplicationModule(
 
     @Provides
     @Singleton
-    fun provideApplication(): Application =
-        application
+    fun provideApplication(): Application = application
 
 }

@@ -18,7 +18,9 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun okHttpClientBuilder(@ApplicationContext context: Context): OkHttpClient.Builder {
+    fun okHttpClientBuilder(
+        @ApplicationContext context: Context
+    ): OkHttpClient.Builder {
         val cacheDir = File(context.cacheDir, "http")
         val cache = Cache(cacheDir, DISK_CACHE_SIZE)
 

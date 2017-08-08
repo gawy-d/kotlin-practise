@@ -31,10 +31,8 @@ class HomePresenter @Inject constructor(
         screen = null
     }
 
-    override fun onTwitchCTAClicked() =
-        router?.launchTwitchHome() ?: Unit
+    override fun onTwitchCTAClicked() = router?.launchTwitchHome() ?: Unit
 
-    private fun start() =
-        toolbarBuilder?.build(resourceProvider.getString(R.string.title_home)) ?: Unit
+    private fun start() = toolbarBuilder?.build(resourceProvider.getString(R.string.title_home)) ?: Unit
 
 }

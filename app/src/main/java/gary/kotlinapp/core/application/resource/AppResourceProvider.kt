@@ -7,7 +7,8 @@ class AppResourceProvider constructor(
     private val context: Context
 ) : ResourceProvider {
 
-    override fun getString(@StringRes res: Int): String =
-        context.getString(res)
+    override fun getString(
+        @StringRes res: Int
+    ): String = context.getString(res)
 
 }
